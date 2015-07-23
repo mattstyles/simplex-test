@@ -1,0 +1,20 @@
+{
+  "name": "simplex-test",
+  "version": "0.0.0",
+  "description": "Testing the simplex noise generation algorithm",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prebuild": "rm -rf main.js",
+    "build": "browserify index.js -t babelify -d > main.js",
+  },
+  "author": "Matt Styles",
+  "license": "WTFPL",
+  "devDependencies": {
+    "babelify": "^6.1.3",
+    "browserify": "^11.0.0"
+  },
+  "dependencies": {
+    "fast-simplex-noise": "^1.0.0"
+  }
+}
