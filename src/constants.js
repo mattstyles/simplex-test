@@ -1,8 +1,8 @@
 
 
 const CONSTANTS = {
-    WIDTH: 256,
-    HEIGHT: 256,
+    WIDTH: 88,
+    HEIGHT: 32,
     PIXEL_WIDTH: 8,
     PIXEL_HEIGHT: 11
 }

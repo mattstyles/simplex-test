@@ -14,10 +14,12 @@ document.body.appendChild( canvas )
 const blue = 'rgb( 72, 72, 218 )'
 const cyan = 'rgb( 102, 241, 250 )'
 const red = 'rgb( 255, 35, 45 )'
+const brown = 'rgb( 155, 84, 10 )'
 const yellow = 'rgb( 235, 235, 77 )'
 const green = 'rgb( 77, 216, 18 )'
 const grey = 'rgb( 190, 190, 190 )'
 const white = 'rgb( 221, 224, 234 )'
+
 
 
 export default class Renderer {
@@ -59,8 +61,8 @@ export default class Renderer {
         }
         if ( val >= .73 && val < .78 ) {
             return {
-                color: grey,
-                char: '.'
+                color: brown,
+                char: '='
             }
         }
         if ( val >= .78 && val <= 1 ) {
