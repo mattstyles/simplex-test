@@ -1,11 +1,11 @@
 
 
 const CONSTANTS = {
-    WIDTH: 88,
-    HEIGHT: 32,
+    WIDTH: 64,
+    HEIGHT: 48,
     PIXEL_WIDTH: 8,
     PIXEL_HEIGHT: 11,
-    PIXEL_SIZE: 6
+    PIXEL_SIZE: 8
 }
 
 export default CONSTANTS

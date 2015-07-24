@@ -6,8 +6,8 @@ import RollingMask from './rollingMask'
 import BoxMask from './boxMask'
 import FlatMask from './flatMask'
 import Merger from './merge'
-// import Renderer from './renderer'
-import Renderer from './colRenderer'
+import Renderer from './renderer'
+// import Renderer from './colRenderer'
 
 import { to1d, max, min } from './util'
 
@@ -21,9 +21,9 @@ let simplexParams = {
 }
 
 let rollingParams = {
-    num: 3000,
-    maxAge: 50,
-    mapBorder: 12
+    num: 5000,
+    maxAge: 100,
+    mapBorder: 6
 }
 
 let boxParams = {
@@ -63,7 +63,7 @@ const merger = new Merger({
 })
 
 merger
-    .mask( boxMask.generate( boxParams ).map )
+    // .mask( boxMask.generate( boxParams ).map )
     .mask( rollingMask.generate( rollingParams ).map )
 
 const renderer = new Renderer({
@@ -79,10 +79,10 @@ function make() {
     // boxMask.generate( boxParams )
     // map = boxMask.map
 
-    // simplexGen.generate( simplexParams )
-    // map = merger.base( simplexGen.map ).merge()
-    flatMask.generate( flatParams )
-    map = merger.base( flatMask.map ).merge()
+    simplexGen.generate( simplexParams )
+    map = merger.base( simplexGen.map ).merge()
+    // flatMask.generate( flatParams )
+    // map = merger.base( flatMask.map ).merge()
     renderer.render( map )
 }
 

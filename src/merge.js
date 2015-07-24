@@ -30,27 +30,25 @@ export default class Merger {
         // Aggregate masks - the merge then just applies the base
         this.maskMap = this.maskMap.map( ( cell, i ) => {
             // aggregate
-            let value = this.masks.reduce( ( prev, curr ) => prev + curr[ i ], 0 )
-
-            // normalize
-            value = value / this.masks.length
+            let value = this.masks.reduce( ( prev, curr ) => prev * curr[ i ], 1 )
 
             return value
         })
 
+        this.normalize( this.maskMap )
+
         return this
     }
 
-    normalize() {
-        let range = max( this.map ) - min( this.map )
-        this.map = this.map.map( cell => cell / range )
+    normalize( map ) {
+        let range = max( map ) - min( map )
+        return map.map( cell => cell / range )
     }
 
     merge() {
         // Add mask map cell to base map cell and normalize
         this.map = this.maskMap.map( ( cell, index ) => ( cell * this.baseMap[ index ] ) )
-        this.normalize()
-        return this.map
+        return this.normalize( this.map )
     }
 
 }

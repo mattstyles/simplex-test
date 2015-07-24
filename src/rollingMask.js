@@ -32,7 +32,11 @@ class Particle {
         return true
     }
 
+    // This isnt a great step function, not that accurate but should be enough
+    // It will mean that particles probably wont stay alive for their whole lifecycle
+    // Upping the attempts limit will help but its a big fat hack anyway
     step() {
+        let attemptLimit = 12
         let old = {}
         old.x = this.pos.x
         old.y = this.pos.y
@@ -47,7 +51,7 @@ class Particle {
             this.pos.x = old.x += random( -1, 1 )
             this.pos.y = old.y += random( -1, 1 )
 
-            if ( attempts++ > 8 ) {
+            if ( attempts++ > attemptLimit ) {
                 this.age = this.maxAge
                 break
             }
@@ -91,6 +95,8 @@ export default class RollingGen {
                 mapWidth: this.width,
                 mapHeight: this.height,
                 maxAge: params.maxAge,
+                // This positioning inherently creates boxes, should be smarter about
+                // initial particle placement
                 pos: {
                     x: random( 0 + params.mapBorder, this.width - params.mapBorder ),
                     y: random( 0 + params.mapBorder, this.height - params.mapBorder )
