@@ -3,19 +3,64 @@
  */
 
 
-import { to1d } from './util'
+import { to1d, max, min } from './util'
 import random from 'lodash.random'
 
-class Cell {
+class Particle {
     constructor( opts ) {
         this.mapWidth = opts.mapWidth
         this.mapHeight = opts.mapHeight
+        this.age = 0
         this.maxAge = opts.maxAge
         this.pos = opts.pos
+        this.map = opts.map
+        this.currentCellValue = 0
+    }
+
+    isPosValid() {
+        if ( this.pos.x >= this.mapWidth ||
+             this.pos.x < 0 ||
+             this.pos.y >= this.mapHeight ||
+             this.pos.y < 0 ) {
+            return false
+        }
+
+        if ( this.map[ to1d( this.pos.x, this.pos.y ) ] >= this.currentCellValue ) {
+            return false
+        }
+
+        return true
     }
 
     step() {
+        let old = {}
+        old.x = this.pos.x
+        old.y = this.pos.y
+        this.currentCellValue = this.map[ to1d( old.x, old.y ) ]
 
+        this.pos.x = old.x += random( -1, 1 )
+        this.pos.y = old.y += random( -1, 1 )
+
+        let attempts = 0
+
+        while ( !this.isPosValid() ) {
+            this.pos.x = old.x += random( -1, 1 )
+            this.pos.y = old.y += random( -1, 1 )
+
+            if ( attempts++ > 8 ) {
+                this.age = this.maxAge
+                break
+            }
+        }
+
+        this.age++
+    }
+
+    roll() {
+        while( this.age < this.maxAge ) {
+            this.map[ to1d( this.pos.x, this.pos.y ) ] += 1
+            this.step()
+        }
     }
 }
 
@@ -27,12 +72,11 @@ export default class RollingGen {
         this.map = new Array( this.width * this.height )
     }
 
-    rndMoveParticle( x, y ) {
-        x += random( -1, 1 )
-        y += random( -1, 1 )
-
-
+    normalize() {
+        let range = max( this.map ) - min( this.map )
+        this.map = this.map.map( cell => cell / range )
     }
+
 
     generate( params ) {
         // Blank map, full of 0
@@ -40,22 +84,23 @@ export default class RollingGen {
             this.map[ i ] = 0
         }
 
-        for ( let particle = 0; particle < params.num; particle++ ) {
-            let age = 0
-            let pos = {
-                x: random( 0, this.width ),
-                y: random( 0, this.height )
-            }
-            while ( age < params.age ) {
-
-                // Inc cell
-                this.map[ to1d( pos.x, pos.y ) ] += 1
-
-                // Move to random adjacent square (that is lower in value)
-                pos = this.rndMoveParticle( pos.x, pos.y )
-
-                age++
-            }
+        // Start each particle rolling
+        for ( let num = 0; num < params.num; num++ ) {
+            let particle = new Particle({
+                map: this.map,
+                mapWidth: this.width,
+                mapHeight: this.height,
+                maxAge: params.maxAge,
+                pos: {
+                    x: random( 0, this.width ),
+                    y: random( 0, this.height )
+                }
+            })
+            particle.roll()
+            num++
         }
+
+        // 0...1
+        this.normalize()
     }
 }

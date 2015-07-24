@@ -2,9 +2,11 @@
 import Gui from './gui'
 import CONSTANTS from './constants'
 import SimplexGen from './simplex'
+import RollingMask from './rollingMask'
+import BoxMask from './boxMask'
 import Renderer from './renderer'
 
-import { to1d } from './util'
+import { to1d, max, min } from './util'
 
 let simplexParams = {
     min: 0,
@@ -15,11 +17,30 @@ let simplexParams = {
     amplitude: 1
 }
 
+let rollingParams = {
+    num: 3000,
+    maxAge: 50
+}
+
+let boxParams = {
+    outerEdge: 0.12,
+    innerEdge: 0.36
+}
 
 
 let map = null
 
 const simplexGen = new SimplexGen({
+    width: CONSTANTS.WIDTH,
+    height: CONSTANTS.HEIGHT
+})
+
+const rollingMask = new RollingMask({
+    width: CONSTANTS.WIDTH,
+    height: CONSTANTS.HEIGHT
+})
+
+const boxMask = new BoxMask({
     width: CONSTANTS.WIDTH,
     height: CONSTANTS.HEIGHT
 })
@@ -30,8 +51,12 @@ const renderer = new Renderer({
 })
 
 function make() {
-    simplexGen.generate( simplexParams )
-    map = simplexGen.map
+    // simplexGen.generate( simplexParams )
+    // map = simplexGen.map
+    // rollingMask.generate( rollingParams )
+    // map = rollingMask.map
+    boxMask.generate( boxParams )
+    map = boxMask.map
     renderer.render( map )
 }
 
@@ -60,3 +85,5 @@ window.debugMap = function( x, y ) {
         console.log( row.join( ' ' ) )
     }
 }
+window.max = max
+window.min = min
