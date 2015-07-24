@@ -4,7 +4,10 @@ import CONSTANTS from './constants'
 import SimplexGen from './simplex'
 import RollingMask from './rollingMask'
 import BoxMask from './boxMask'
-import Renderer from './renderer'
+import FlatMask from './flatMask'
+import Merger from './merge'
+// import Renderer from './renderer'
+import Renderer from './colRenderer'
 
 import { to1d, max, min } from './util'
 
@@ -19,7 +22,8 @@ let simplexParams = {
 
 let rollingParams = {
     num: 3000,
-    maxAge: 50
+    maxAge: 50,
+    mapBorder: 12
 }
 
 let boxParams = {
@@ -27,6 +31,9 @@ let boxParams = {
     innerEdge: 0.36
 }
 
+let flatParams = {
+    value: 1
+}
 
 let map = null
 
@@ -45,6 +52,20 @@ const boxMask = new BoxMask({
     height: CONSTANTS.HEIGHT
 })
 
+const flatMask = new FlatMask({
+    width: CONSTANTS.WIDTH,
+    height: CONSTANTS.HEIGHT
+})
+
+const merger = new Merger({
+    width: CONSTANTS.WIDTH,
+    height: CONSTANTS.HEIGHT
+})
+
+merger
+    .mask( boxMask.generate( boxParams ).map )
+    .mask( rollingMask.generate( rollingParams ).map )
+
 const renderer = new Renderer({
     width: CONSTANTS.WIDTH,
     height: CONSTANTS.HEIGHT
@@ -55,8 +76,13 @@ function make() {
     // map = simplexGen.map
     // rollingMask.generate( rollingParams )
     // map = rollingMask.map
-    boxMask.generate( boxParams )
-    map = boxMask.map
+    // boxMask.generate( boxParams )
+    // map = boxMask.map
+
+    // simplexGen.generate( simplexParams )
+    // map = merger.base( simplexGen.map ).merge()
+    flatMask.generate( flatParams )
+    map = merger.base( flatMask.map ).merge()
     renderer.render( map )
 }
 
@@ -74,13 +100,15 @@ make()
 
 // Globals for debug/test
 window.map = map
+window.merger = merger
 
 
-window.debugMap = function( x, y ) {
+window.debugMap = function( x, y, map ) {
+    let m = map || window.map
     for ( let i = y; i < y + 10; i++ ) {
         let row = []
         for ( let j = x; j < x + 10; j++ ) {
-            row.push( map[ to1d( i, j ) ].toFixed( 2 ) )
+            row.push( m[ to1d( i, j ) ].toFixed( 2 ) )
         }
         console.log( row.join( ' ' ) )
     }

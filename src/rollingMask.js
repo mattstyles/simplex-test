@@ -92,8 +92,8 @@ export default class RollingGen {
                 mapHeight: this.height,
                 maxAge: params.maxAge,
                 pos: {
-                    x: random( 0, this.width ),
-                    y: random( 0, this.height )
+                    x: random( 0 + params.mapBorder, this.width - params.mapBorder ),
+                    y: random( 0 + params.mapBorder, this.height - params.mapBorder )
                 }
             })
             particle.roll()
@@ -102,5 +102,7 @@ export default class RollingGen {
 
         // 0...1
         this.normalize()
+
+        return this
     }
 }
