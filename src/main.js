@@ -63,7 +63,7 @@ const merger = new Merger({
 })
 
 merger
-    // .mask( boxMask.generate( boxParams ).map )
+    .mask( boxMask.generate( boxParams ).map )
     .mask( rollingMask.generate( rollingParams ).map )
 
 const renderer = new Renderer({
@@ -72,6 +72,9 @@ const renderer = new Renderer({
 })
 
 function make() {
+    let start = window.performance.now()
+    console.log( 'generating' )
+
     // simplexGen.generate( simplexParams )
     // map = simplexGen.map
     // rollingMask.generate( rollingParams )
@@ -81,9 +84,13 @@ function make() {
 
     simplexGen.generate( simplexParams )
     map = merger.base( simplexGen.map ).merge()
+
+    console.log( 'generation time', window.performance.now() - start )
+    let renderStart = window.performance.now()
     // flatMask.generate( flatParams )
     // map = merger.base( flatMask.map ).merge()
     renderer.render( map )
+    console.log( 'render time', window.performance.now() - renderStart )
 }
 
 
